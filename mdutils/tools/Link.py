@@ -5,14 +5,16 @@
 # This file is part of mdutils. https://github.com/didix21/mdutils
 #
 # MIT License: (C) 2020 Dídac Coll
+from typing import Dict, Optional
+
 from mdutils.tools.TextUtils import TextUtils
 
 
 class Reference:
-    def __init__(self):
-        self.references = {}
+    def __init__(self) -> None:
+        self.references: Dict[str, str] = {}
 
-    def get_references(self) -> dict:
+    def get_references(self) -> Dict[str, str]:
         """
         :return:
         :rtype: dict
@@ -33,7 +35,7 @@ class Reference:
         return "\n\n\n" + references_as_markdown
 
     def new_link(
-        self, link: str, text: str, reference_tag: str = None, tooltip: str = None
+        self, link: str, text: str, reference_tag: Optional[str] = None, tooltip: Optional[str] = None
     ) -> str:
         """
         :param link:
@@ -54,7 +56,7 @@ class Reference:
         self.__update_ref(link, reference_tag, tooltip)
         return "[" + text + "][" + reference_tag + "]"
 
-    def __update_ref(self, link: str, reference_tag: str, tooltip: str = None):
+    def __update_ref(self, link: str, reference_tag: str, tooltip: Optional[str] = None) -> None:
         if not (reference_tag in self.references.keys()):
             if tooltip is not None:
                 self.references.update(
@@ -67,7 +69,7 @@ class Reference:
 
 class Inline:
     @staticmethod
-    def new_link(link: str, text: str = None, tooltip: str = None):
+    def new_link(link: str, text: Optional[str] = None, tooltip: Optional[str] = None) -> str:
         """
         :param link:
         :type link: str
@@ -95,7 +97,7 @@ class Inline:
         return Inline.__md_link(link=link, text=text)
 
     @staticmethod
-    def __md_link(link: str, text: str):
+    def __md_link(link: str, text: str) -> str:
         return TextUtils.text_external_link(text, link)
 
 

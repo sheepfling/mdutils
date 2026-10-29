@@ -16,7 +16,7 @@ class MarkDownFile(object):
         - Rewrite a file with new data.
         - Write at the end of the file."""
 
-    def __init__(self, name="", dirname: Optional[str] = None):
+    def __init__(self, name: str = "", dirname: Optional[object] = None) -> None:
         """Creates a markdown file, if name is not empty.
         :param str name: provide the file name or a path joinly with the file name. For example: `./my-path/my-file.md`.
         :param str dirname: use dirname if you want to provide the path separately from the name.
@@ -27,7 +27,7 @@ class MarkDownFile(object):
             self.file = open(f"{self.file_name}", "w+", encoding="UTF-8")
             self.file.close()
 
-    def _get_file_name(self, name: str, dirname: Optional[str] = None) -> str:
+    def _get_file_name(self, name: str, dirname: Optional[object] = None) -> str:
         if dirname:
             return (
                 f"{dirname}/{name}" if name.endswith(".md") else f"{dirname}/{name}.md"
@@ -35,7 +35,7 @@ class MarkDownFile(object):
 
         return name if name.endswith(".md") else f"{name}.md"
 
-    def rewrite_all_file(self, data: str):
+    def rewrite_all_file(self, data: str) -> None:
         """Rewrite all the data of a Markdown file by ``data``.
 
         :param str data: is a string containing all the data that is written in the markdown file.
@@ -43,7 +43,7 @@ class MarkDownFile(object):
         with open(f"{self.file_name}", "w", encoding="utf-8") as self.file:
             self.file.write(data)
 
-    def append_end(self, data: str):
+    def append_end(self, data: str) -> None:
         """Write at the last position of a Markdown file.
 
         :param str data: is a string containing all the data that is written in the markdown file.
@@ -51,7 +51,7 @@ class MarkDownFile(object):
         with open(f"{self.file_name}", "a", encoding="utf-8") as self.file:
             self.file.write(data)
 
-    def append_after_second_line(self, data: str):
+    def append_after_second_line(self, data: str) -> None:
         """Write after the file's first line.
 
         :param str data: is a string containing all the data that is written in the markdown file.

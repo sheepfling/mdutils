@@ -7,9 +7,12 @@
 # MIT License: (C) 2020 Dídac Coll
 
 
+from typing import Optional
+
+
 class Html:
     @staticmethod
-    def paragraph(text: str, align: str = None) -> str:
+    def paragraph(text: str, align: Optional[str] = None) -> str:
         """
         :param text:
         :param align: ``center`` or ``right``.
@@ -28,7 +31,7 @@ class Html:
         return '<p align="{}">\n    {}\n</p>'.format(align, text)
 
     @classmethod
-    def image(cls, path: str, size: str = None, align: str = None) -> str:
+    def image(cls, path: str, size: Optional[str] = None, align: Optional[str] = None) -> str:
         """
 
         :param path:
@@ -55,7 +58,7 @@ class Html:
         return cls.__html_image(path=path, size=size)
 
     @classmethod
-    def __html_image(cls, path: str, size: str = None):
+    def __html_image(cls, path: str, size: Optional[str] = None) -> str:
         if size:
             return '<img src="{}" {}/>'.format(
                 path, HtmlSize.size_to_width_and_height(size=size)
@@ -97,14 +100,14 @@ class HtmlSize:
         return 'width="{}"'.format(int(size))
 
     @classmethod
-    def __get_height(cls, size: str):
+    def __get_height(cls, size: str) -> str:
         return 'height="{}"'.format(int(size))
 
 
 class SizeBadFormat(Exception):
     """Raise exception when size does not match the expected format"""
 
-    def __init__(self, message):
+    def __init__(self, message: object) -> None:
         Exception.__init__(
             self,
             "Unexpected format: {}. Expected: '<int>', 'x<int>' or '<int>x<int>'".format(

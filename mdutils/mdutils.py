@@ -25,9 +25,13 @@ from mdutils.tools.Header import Header, HeaderStyle
 from mdutils.tools.Image import Image
 from mdutils.tools.Link import Inline, Reference
 from mdutils.tools.TextUtils import TextUtils
-from mdutils.tools.MDList import MDList, MDCheckbox
+from mdutils.tools.MDList import MDList, MDCheckbox, _ListItem
 from textwrap import fill
-from typing import Union, Optional, List
+from typing import Any, Iterable, Iterator, List, Optional, Sequence, Union, cast, overload
+
+
+ListItem = _ListItem
+TableAlignment = Optional[Union[str, Iterable[Optional[str]]]]
 
 
 class MdUtils:
@@ -45,7 +49,7 @@ class MdUtils:
     - **file_data_text:** contains all the file data that will be written on the markdown file.
     """
 
-    def __init__(self, file_name: str, title: str = "", author: str = "", title_header_style: str = "setext"):
+    def __init__(self, file_name: str, title: str = "", author: str = "", title_header_style: str = "setext") -> None:
         """
 
         :param file_name: it is the name of the Markdown file.
@@ -61,7 +65,7 @@ class MdUtils:
         self.title = str(Header(level=1, title=title, style=HeaderStyle[title_header_style.upper()]))
         self.table_of_contents = ""
         self.file_data_text = ""
-        self._table_titles = []
+        self._table_titles: List[ListItem] = []
         self.reference = Reference()
         self.image = Image(reference=self.reference)
 
@@ -139,7 +143,7 @@ class MdUtils:
         )
         return str(Header(level, title, HeaderStyle[style.upper()], header_id))
 
-    def __add_new_item_table_of_content(self, level: int, item: Union[List[str], str]):
+    def __add_new_item_table_of_content(self, level: int, item: str) -> None:
         """Automatically add new atx headers to the table of contents.
 
         :param level: add levels up to 6.
@@ -152,7 +156,7 @@ class MdUtils:
         curr = self._table_titles
 
         for i in range(level - 1):
-            curr = curr[-1]
+            curr = cast(List[ListItem], curr[-1])
 
         curr.append(item)
 
@@ -205,8 +209,8 @@ class MdUtils:
         self,
         columns: int,
         rows: int,
-        text: List[str],
-        text_align: Optional[Union[str, list]] = "center",
+        text: Sequence[object],
+        text_align: TableAlignment = "center",
         marker: str = "",
     ) -> str:
         """This method takes a list of strings and creates a table.
@@ -255,7 +259,7 @@ class MdUtils:
 
         return text_table
     
-    def new_table_array(self, data: List[List[str]], text_align: Optional[Union[str, list]] = None, marker: str = ""):
+    def new_table_array(self, data: Sequence[Sequence[object]], text_align: TableAlignment = None, marker: str = "") -> str:
         """
         Create a table from a list of lists.
         """
@@ -452,7 +456,7 @@ class MdUtils:
         """
         return self.file_data_text.replace(marker, text)
 
-    def ___update_file_data(self, file_data):
+    def ___update_file_data(self, file_data: str) -> None:
         self.file_data_text += file_data
 
     def new_inline_link(
@@ -593,7 +597,19 @@ class MdUtils:
             text=text, path=path, reference_tag=reference_tag
         )
 
-    def new_list(self, items: List[str], marked_with: str = "-"):
+    @overload
+    def new_list(self, items: Iterator[Union[str, List[str]]], marked_with: str = "-") -> None: ...
+
+    @overload
+    def new_list(self, items: Iterable[ListItem], marked_with: str = "-") -> None: ...
+
+    @overload
+    def new_list(self, items: Iterable[List[str]], marked_with: str = "-") -> None: ...
+
+    @overload
+    def new_list(self, items: Iterable[List[List[str]]], marked_with: str = "-") -> None: ...
+
+    def new_list(self, items: Iterable[Any], marked_with: str = "-") -> None:
         """Add unordered or ordered list in MarkDown file.
 
         :param items: Array of items for generating the list.
@@ -606,7 +622,19 @@ class MdUtils:
         mdlist = MDList(items, marked_with)
         self.___update_file_data("\n" + mdlist.get_md())
 
-    def new_checkbox_list(self, items: List[str], checked: bool = False):
+    @overload
+    def new_checkbox_list(self, items: Iterator[Union[str, List[str]]], checked: bool = False) -> None: ...
+
+    @overload
+    def new_checkbox_list(self, items: Iterable[ListItem], checked: bool = False) -> None: ...
+
+    @overload
+    def new_checkbox_list(self, items: Iterable[List[str]], checked: bool = False) -> None: ...
+
+    @overload
+    def new_checkbox_list(self, items: Iterable[List[List[str]]], checked: bool = False) -> None: ...
+
+    def new_checkbox_list(self, items: Iterable[Any], checked: bool = False) -> None:
         """Add checkbox list in MarkDown file.
 
         :param items: Array of items for generating the checkbox list.

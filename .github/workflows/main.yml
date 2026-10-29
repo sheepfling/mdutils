@@ -22,6 +22,9 @@ jobs:
       run: | 
         pip install pytest
         pip install pytest-cov
+        pip install build mypy
+    - name: Check package annotations
+      run: python -m mypy --follow-imports=normal mdutils
     - name: Test unittest
       run: |
         pytest --cov --junitxml=junit.xml -o junit_family=legacy

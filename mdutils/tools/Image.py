@@ -6,11 +6,13 @@
 #
 # MIT License: (C) 2020 Dídac Coll
 
+from typing import Optional
+
 from mdutils.tools.Link import Inline, Reference
 
 
 class Image:
-    def __init__(self, reference: Reference):
+    def __init__(self, reference: Reference) -> None:
         """
         :param reference:
         :type reference: Reference
@@ -18,7 +20,7 @@ class Image:
         self.reference = reference
 
     @staticmethod
-    def new_inline_image(text: str, path: str, tooltip: str = None) -> str:
+    def new_inline_image(text: str, path: str, tooltip: Optional[str] = None) -> str:
         """
         :param text: Text that is going to be displayed in the markdown file as a iamge.
         :type text: str
@@ -32,7 +34,7 @@ class Image:
         return "!" + Inline.new_link(link=path, text=text, tooltip=tooltip)
 
     def new_reference_image(
-        self, text: str, path: str, reference_tag: str = None, tooltip: str = None
+        self, text: str, path: str, reference_tag: Optional[str] = None, tooltip: Optional[str] = None
     ) -> str:
         """
         :param text: Text that is going to be displayed in the markdown file as a image.

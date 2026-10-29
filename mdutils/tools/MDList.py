@@ -6,13 +6,18 @@
 #
 # MIT License: (C) 2020 Dídac Coll
 import re
+from typing import Any, Iterable, Iterator, List, Union, overload
+
+
+# Only lists are traversed recursively; each leaf is a string.
+_ListItem = Union[str, List["_ListItem"]]
 
 
 class MDListHelper:
-    def __init__(self):
+    def __init__(self) -> None:
         self.n_tabs = 0
 
-    def _get_unordered_markdown_list(self, items, marker: str) -> str:
+    def _get_unordered_markdown_list(self, items: Iterable[_ListItem], marker: str) -> str:
         md_list = ""
         for item in items:
             if isinstance(item, list):
@@ -24,7 +29,7 @@ class MDListHelper:
 
         return md_list
 
-    def _get_ordered_markdown_list(self, items) -> str:
+    def _get_ordered_markdown_list(self, items: Iterable[_ListItem]) -> str:
         md_list = ""
         n_marker = 1
         for item in items:
@@ -37,7 +42,7 @@ class MDListHelper:
                 n_marker += 1
         return md_list
 
-    def _add_new_item(self, item: str, marker: str):
+    def _add_new_item(self, item: str, marker: str) -> str:
         item_with_hyphen = (
             item
             if self._is_there_marker_in_item(item)
@@ -57,18 +62,30 @@ class MDListHelper:
         return False
 
     @classmethod
-    def _add_hyphen(cls, item: str, marker: str):
+    def _add_hyphen(cls, item: str, marker: str) -> str:
         return f"{marker} {item}"
 
     @classmethod
-    def _n_spaces(cls, number_spaces: int = 1):
+    def _n_spaces(cls, number_spaces: int = 1) -> str:
         return " " * number_spaces
 
 
 class MDList(MDListHelper):
     """This class allows to create unordered or ordered MarkDown list."""
 
-    def __init__(self, items, marked_with: str = "-"):
+    @overload
+    def __init__(self, items: Iterator[Union[str, List[str]]], marked_with: str = "-") -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[_ListItem], marked_with: str = "-") -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[List[str]], marked_with: str = "-") -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[List[List[str]]], marked_with: str = "-") -> None: ...
+
+    def __init__(self, items: Iterable[Any], marked_with: str = "-") -> None:
         """
 
         :param items: Array of items for generating the list.
@@ -96,7 +113,19 @@ class MDList(MDListHelper):
 class MDCheckbox(MDListHelper):
     """This class allows to create checkbox MarkDown list."""
 
-    def __init__(self, items, checked: bool = False):
+    @overload
+    def __init__(self, items: Iterator[Union[str, List[str]]], checked: bool = False) -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[_ListItem], checked: bool = False) -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[List[str]], checked: bool = False) -> None: ...
+
+    @overload
+    def __init__(self, items: Iterable[List[List[str]]], checked: bool = False) -> None: ...
+
+    def __init__(self, items: Iterable[Any], checked: bool = False) -> None:
         """
 
         :param items: Array of items for generating the list.
@@ -113,7 +142,7 @@ class MDCheckbox(MDListHelper):
     def get_md(self) -> str:
         return self.md_list
 
-    def _add_new_item(self, item: str, marker: str):
+    def _add_new_item(self, item: str, marker: str) -> str:
         item_with_hyphen = (
             self._add_hyphen(item[2:], "- [x]")
             if self.__is_checked(item)

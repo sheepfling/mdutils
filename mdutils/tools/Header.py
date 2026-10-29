@@ -1,5 +1,6 @@
 from enum import Enum, auto
 import warnings
+from typing import Optional
 
 
 class AtxHeaderLevel(Enum):
@@ -32,7 +33,7 @@ class Header:
     >>> str(Header(level=1, title='New Header', style=HeaderStyle.ATX))
     """
 
-    def __init__(self, level: int, title: str, style: HeaderStyle, header_id: str = None) -> None:
+    def __init__(self, level: int, title: str, style: HeaderStyle, header_id: Optional[str] = None) -> None:
         """Choose and return the header based on the given level, style, and title.
 
         :param level: HeaderLevel enum member, e.g., TITLE, HEADING, SUBHEADING, etc.
@@ -50,7 +51,7 @@ class Header:
         return self._new(self.level, self.title, self.style, self.header_id)
 
     @staticmethod
-    def atx(level: AtxHeaderLevel, title: str, header_id: str = None) -> str:
+    def atx(level: AtxHeaderLevel, title: str, header_id: Optional[str] = None) -> str:
         """Return an atx-style header.
 
         :param title: Text title.
@@ -77,7 +78,7 @@ class Header:
         return "\n" + title + "\n" + separator * len(title) + "\n"
 
     @staticmethod
-    def header_anchor(text: str, link: str = None) -> str:
+    def header_anchor(text: str, link: Optional[str] = None) -> str:
         """Create an internal link to a defined header level in the markdown file.
 
         :param text: Displayed text for the link.
@@ -141,7 +142,7 @@ class Header:
         )
         return str(Header(level, title, HeaderStyle[style.upper()], header_id))
 
-    def _new(self, level: int, title: str, style: HeaderStyle = HeaderStyle.ATX, header_id: str = None) -> str:
+    def _new(self, level: int, title: str, style: HeaderStyle = HeaderStyle.ATX, header_id: Optional[str] = None) -> str:
         if style == HeaderStyle.ATX:
             return Header.atx(AtxHeaderLevel(level), title, header_id)
         elif style == HeaderStyle.SETEXT:
@@ -150,7 +151,7 @@ class Header:
             raise ValueError("style's expected value: 'HeaderStyle.ATX' or 'HeaderStyle.SETEXT'")
 
     @staticmethod
-    def _get_header_id(header_id: str = None) -> str:
+    def _get_header_id(header_id: Optional[str] = None) -> str:
         if header_id:
             return " {#" + header_id + "}"
         return ""

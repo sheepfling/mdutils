@@ -5,16 +5,19 @@
 # This file is part of mdutils. https://github.com/didix21/mdutils
 #
 # MIT License: (C) 2020 Dídac Coll
-from typing import Optional, Union, Iterable, List
+from typing import Iterable, Optional, Sequence, Union
+
+
+TableAlignment = Optional[Union[str, Iterable[Optional[str]]]]
 
 
 class Table:
-    def __init__(self):
+    def __init__(self) -> None:
         self.rows = 0
         self.columns = 0
 
     @staticmethod
-    def _align(columns: int, text_align: Optional[Union[str, Iterable]] = None) -> str:
+    def _align(columns: int, text_align: TableAlignment = None) -> str:
         """This private method it's in charge of aligning text of a table.
 
         - notes: more information about `text_align`
@@ -69,9 +72,9 @@ class Table:
         self,
         columns: int,
         rows: int,
-        text: List[str],
-        text_align: Optional[Union[str, list]] = None,
-    ):
+        text: Sequence[object],
+        text_align: TableAlignment = None,
+    ) -> str:
         """This method takes a list of strings and creates a table.
 
             Using arguments ``columns`` and ``rows`` allows to create a table of *n* columns and *m* rows.
@@ -123,7 +126,7 @@ class Table:
         else:
             raise ValueError("columns * rows is not equal to text length")
 
-    def create_table_array(self, data: List[List[str]], text_align: Optional[Union[str, list]] = None):
+    def create_table_array(self, data: Sequence[Sequence[object]], text_align: TableAlignment = None) -> str:
         """
         Create a table from a list of lists.
         

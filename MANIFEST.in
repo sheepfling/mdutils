@@ -3,3 +3,5 @@ include ./doc/source/README.rst
 
 # Include the license file
 include LICENSE.txt
+# PEP 561 marker for installed type checkers
+include mdutils/py.typed

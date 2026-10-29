@@ -5,12 +5,18 @@
 # This file is part of mdutils. https://github.com/didix21/mdutils
 #
 # MIT License: (C) 2020 Dídac Coll
-from typing import List
+from typing import Any, Iterable, Iterator, List, Union, overload
 import re
 
 
+# Contents have the same recursive string-list shape as Markdown lists.
+from mdutils.tools.MDList import _ListItem as _TocEntry
+
+
 class TableOfContents:
-    def _loop_through(self, elements, tab: str = "", depth: int = 1) -> str:
+    def _loop_through(
+        self, elements: Iterable[_TocEntry], tab: str = "", depth: int = 1
+    ) -> str:
         """Method that go through a list of elements that contain strings and other list and return a string.
 
         The returned string is ready to be written in a markdown file in order to create a table of contents.
@@ -43,8 +49,28 @@ class TableOfContents:
 
         return elements_to_string
 
+    @overload
     def create_table_of_contents(
-        self, array_of_title_contents: List[str], depth: int = 1
+        self, array_of_title_contents: Iterator[Union[str, List[str]]], depth: int = 1
+    ) -> str: ...
+
+    @overload
+    def create_table_of_contents(
+        self, array_of_title_contents: Iterable[_TocEntry], depth: int = 1
+    ) -> str: ...
+
+    @overload
+    def create_table_of_contents(
+        self, array_of_title_contents: Iterable[List[str]], depth: int = 1
+    ) -> str: ...
+
+    @overload
+    def create_table_of_contents(
+        self, array_of_title_contents: Iterable[List[List[str]]], depth: int = 1
+    ) -> str: ...
+
+    def create_table_of_contents(
+        self, array_of_title_contents: Iterable[Any], depth: int = 1
     ) -> str:
         """This method can create a table of contents using an array of the different titles. The depth can be changed.
         :param array_of_title_contents: a string list with the different headers.
